@@ -1,23 +1,59 @@
 import {
   Box,
-  Button,
-  ButtonGroup,
   Flex,
   Heading,
   HStack,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  Radio,
-  RadioGroup,
-  Stack,
+  Icon,
   Text,
   useRadio,
   useRadioGroup,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { FiCheck } from "react-icons/fi";
 import { GiBatMask, GiConqueror } from "react-icons/gi";
+import { useNavigate } from "react-router";
+import { Link, Link as ReactRouterLink } from "react-router-dom";
+
+const NavItem = ({ icon, name, to, ...rest }) => {
+  return (
+    <Link
+      as={ReactRouterLink}
+      to={to}
+      style={{ textDecoration: "none" }}
+      _focus={{ boxShadow: "none" }}
+    >
+      <Flex
+        flexDirection={"column-reverse"}
+        gap={4}
+        justifyContent={"center"}
+        alignItems={"center"}
+        p="16"
+        fontWeight={600}
+        color={"white"}
+        bg="rgba(20, 20, 20, .5)"
+        mx="4"
+        borderRadius="lg"
+        role="group"
+        cursor="pointer"
+        _hover={{
+          bg: "blue.600",
+          color: "white",
+        }}
+        {...rest}
+      >
+        {icon && (
+          <Icon
+            fontSize="8rem"
+            _groupHover={{
+              color: "white",
+            }}
+            as={icon}
+          />
+        )}
+        {name}
+      </Flex>
+    </Link>
+  );
+};
 
 // 1. Create a component that consumes the `useRadio` hook
 function RadioCard(props) {
@@ -56,8 +92,8 @@ function RadioCard(props) {
 // Step 2: Use the `useRadioGroup` hook to control a group of custom radios.
 function Example(getValor) {
   const objeto = [
-    { user: "Jugador", icono: <GiConqueror size={"5rem"} /> },
-    { user: "Creador", icono: <GiBatMask size={"5rem"} /> },
+    { user: "Jugador", icono: <GiConqueror />, to: "/player" },
+    { user: "Creador", icono: <GiBatMask />, to: "/creador" },
   ];
   const { getRootProps, getRadioProps } = useRadioGroup({
     name: "typeUser",
@@ -87,25 +123,36 @@ function Example(getValor) {
 
 export const DecisionTypeUser = () => {
   const [valor, setValor] = useState("");
+  const navigate = useNavigate();
   // const getValor = (e) => {
   //   setValor(e.target.value);
   // };
   // const handleValor = () => {
   //   console.log(valor);
   // };
-  const get = (e) => {
-    setValor(e.target.children[0].children[0].value);
-  };
+  const objetos = [
+    { user: "Jugador", icono: GiConqueror, to: "/player" },
+    { user: "Creador", icono: GiBatMask, to: "/creador" },
+  ];
+
   return (
     <Flex gap={"4"} alignItems={"center"} flexDirection={"column"}>
       <Heading color={"white"}>Elige que clase de usuario eres</Heading>
       <Flex gap={4}>
-        <ButtonGroup>
+        {objetos.map((objeto) => (
+          <NavItem
+            key={objeto.user}
+            icon={objeto.icono}
+            to={objeto.to}
+            name={objeto.user}
+          />
+        ))}
+
+        {/* <ButtonGroup>
           <Button
             display={"flex"}
             flexDirection={"column"}
-            border={"solid 1px"}
-            colorScheme={valor === "Jugador" ? "blue" : "none"}
+            colorScheme={valor === "jugador" ? "blue" : "blackAlpha"}
             p={28}
             gap={4}
             onClick={(e) => get(e)}
@@ -129,9 +176,8 @@ export const DecisionTypeUser = () => {
         <ButtonGroup>
           <Button
             display={"flex"}
-            border={"solid 1px"}
             flexDirection={"column"}
-            colorScheme={valor === "Creador" ? "blue" : "none"}
+            colorScheme={valor === "creador" ? "blue" : "blackAlpha"}
             p={28}
             gap={4}
             onClick={(e) => get(e)}
@@ -150,7 +196,7 @@ export const DecisionTypeUser = () => {
               <GiBatMask size={"5rem"} />
             </Box>
           </Button>
-        </ButtonGroup>
+        </ButtonGroup> */}
       </Flex>
 
       {/* <Example getValor={getValor} />
